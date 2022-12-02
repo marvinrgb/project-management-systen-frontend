@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <TheWelcome />
+    <h1>viewtessst</h1>
   </main>
 </template>

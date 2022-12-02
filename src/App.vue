@@ -1,25 +1,26 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
+import ProjectsVue from './components/Projects.vue';
+import SidebarVue from './components/Sidebar.vue';
+import ProjectVue from './components/Project.vue';
 </script>
 
 <template>
-  <div id="all">
+  <div id="app">
     <img class="bg-img" src="/images/glassmo_bg.jpg">
+    
+    <projects-vue class="mainComponent" v-if="(currentView == 'projects')"></projects-vue>
 
-    <div class="project-container">
-      <div v-for="project in projects" :key="project.id">
-        {{ project }}
-      </div>
-    </div>
+    <project-vue class="mainComponent" v-if="(currentView == 'project')"></project-vue>
+
 
     <div class="sidebar-right">
-      <img class="sidebar-right-item" src="/images/folder_copy.png">
-      <img class="sidebar-right-item" src="/images/folder.png">
-      <img class="sidebar-right-item" src="/images/create_new_folder.png">
-      <img class="sidebar-right-item" src="/images/draft.png">
-      <img class="sidebar-right-item" src="/images/note_add.png">
-    </div>
-
+    <img @click="setView('projects')" class="sidebar-right-item" src="/images/folder_copy.png">
+    <img @click="setView('project')" class="sidebar-right-item" src="/images/folder.png">
+    <img class="sidebar-right-item" src="/images/create_new_folder.png">
+    <img class="sidebar-right-item" src="/images/draft.png">
+    <img class="sidebar-right-item" src="/images/note_add.png">
+  </div>
   </div>
 </template>
 
@@ -27,26 +28,28 @@ import { RouterLink, RouterView } from 'vue-router'
 export default {
   data() {
     return {
-      projects: Object,
-      apiIp: String
+      currentView: String
     }
   },
+  components: {
+    SidebarVue,
+    ProjectsVue,
+    ProjectVue
+  },
   methods: {
-    getProjects() {
-      fetch("localhost:3100/projects", {
-        method: 'GET',
-        mode: 'no-cors',
-        cache: 'no-cache'
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        this.projects = data;
-      })
+    test() {
+      console.log(test)
+    },
+    setProject() {
+      this.$project = 1
+    },
+    setView(view) {
+      this.currentView = view;
     }
   },
   mounted() {
-    console.log("mounted")
-    this.getProjects();
+    this.setProject();
+    this.currentView = 'project';
   }
 }
 </script>
@@ -58,7 +61,7 @@ export default {
     box-sizing: border-box;
   }
   
-  #all {
+  #app {
     height: 100vh;
     width: 100vw;
     position: relative;
@@ -72,17 +75,13 @@ export default {
     opacity: 0.3;
   }
 
-  .project-container {
-    height: 90%;
+  .mainComponent {
+    height: 80%;
     width: 75%;
-    border: 2px solid black;
     position: absolute;
     left: 50%;
     top: 10%;
     transform: translateX(-50%);
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .sidebar-right {
