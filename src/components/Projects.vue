@@ -1,11 +1,9 @@
 <template>
-  <div class="project-container">
-    <div v-for="project in projects" :key="project.id">
-      <div class="project-box">
-        <h2>{{project.name}}</h2>
-        <p>Description: {{project.description}}</p>
-        <p>Genres: {{project.genres}}</p>
-      </div>
+  <div class="projects-container">
+    <div class="project-box" v-for="project in projects" :key="project.id">
+      <h2>{{project.name}}</h2>
+      <p>Description: {{project.description}}</p>
+      <p>Genres: {{project.genres}}</p>
     </div>
   </div>
 </template>
@@ -42,36 +40,42 @@
 </script>
 
 <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-.project-container {
+.projects-container {
     overflow-y: auto;
-    display: grid;
+    display: grid !important;
     gap: 4vh;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
-  .project-container::-webkit-scrollbar {
+  .projects-container::-webkit-scrollbar {
     display: none;
   }
   
-  @media only screen and (min-width: 1000px) {
-    .project-container {
+  /* @media only screen and (min-width: 1000px) {
+    .projects-container {
       grid-template-columns: 1fr 1fr 1fr;
     }
   }
   
   @media only screen and (max-width: 1000px) and (min-width: 600px) {
-    .project-container {
+    .projects-container {
       grid-template-columns: 1fr 1fr;
     }
   }
   
   @media only screen and (max-width: 600px) {
-    .project-container {
+    .projects-container {
       grid-template-columns: 1fr;
     }
-  }
+  } */
 
   .project-box {
     width: 100%;

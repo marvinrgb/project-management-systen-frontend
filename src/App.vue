@@ -6,6 +6,7 @@ import ProjectVue from './components/Project.vue';
 </script>
 
 <template>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <div id="app">
     <img class="bg-img" src="/images/glassmo_bg.jpg">
     
@@ -49,7 +50,7 @@ export default {
   },
   mounted() {
     this.setProject();
-    this.currentView = 'project';
+    this.currentView = 'projects';
   }
 }
 </script>
@@ -72,7 +73,7 @@ export default {
     height: 100%;
     width: 100%;
     position: absolute;
-    opacity: 0.3;
+    opacity: 0.4;
   }
 
   .mainComponent {
