@@ -1,7 +1,7 @@
 <template>
   <div class="project-container">
     <input id="id-input" class="id-input">
-      <div class="detail-box">
+      <div v-if="project" class="detail-box">
         <div class="row" v-for="(value, propertyName) in project" v-bind:key="propertyName">
           <div class="key">{{propertyName}}</div>
           <div class="value">{{value}}</div>
@@ -101,7 +101,10 @@ export default {
   },
   methods: {
     getProject() {
-      fetch(`http://localhost:3100/project/${this.$project}`, {
+    if (isNaN(this.$project)) {
+      return;
+    }
+      fetch(`http://localhost:3100/project/${this.$route.params.projectid}`, {
         method: 'GET'
       })
       .then((res) => res.json())
@@ -113,28 +116,33 @@ export default {
         console.log(err)
       })
     },
-  getTracksForProject() {
-    fetch(`http://localhost:3100/tracksByProject/${this.$project}`, {
-      method: 'GET'
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        this.tracks = data;
+    getTracksForProject() {
+      if (isNaN(this.$project)) {
+        return;
+      }
+      fetch(`http://localhost:3100/tracksByProject/${this.$route.params.projectid}`, {
+        method: 'GET'
       })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
-  },
-  mounted() {
-    console.log("mounted")
-    this.getProject();
-
-    document.getElementById('id-input').addEventListener('keyup', (event) => {
-      this.$project = parseInt(event.target.value);
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data)
+          this.tracks = data;
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      }
+    },
+    mounted() {
       this.getProject();
+      if (this.$route.params.projectid) {
+        document.getElementById('id-input').value = this.$route.params.projectid;
+      }
       this.getTracksForProject();
-    })
-  }}
+      document.getElementById('id-input').addEventListener('keyup', (event) => {
+        this.$project = parseInt(event.target.value);
+        this.getProject();
+        this.getTracksForProject();
+      })
+    }}
 </script>

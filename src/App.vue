@@ -1,8 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
-import ProjectsVue from './components/Projects.vue';
-import SidebarVue from './components/Sidebar.vue';
-import ProjectVue from './components/Project.vue';
+// import ProjectsVue from './components/Projects.vue';
+// import SidebarVue from './components/Sidebar.vue';
+// import ProjectVue from './components/Project.vue';
 </script>
 
 <template>
@@ -10,15 +10,19 @@ import ProjectVue from './components/Project.vue';
   <div id="app">
     <img class="bg-img" src="/images/glassmo_bg.jpg">
     
-    <projects-vue class="mainComponent" v-if="(currentView == 'projects')"></projects-vue>
+    <!-- <projects-vue class="mainComponent" v-if="(currentView == 'projects')"></projects-vue> -->
 
-    <project-vue class="mainComponent" v-if="(currentView == 'project')"></project-vue>
+    <!-- <project-vue class="mainComponent" v-if="(currentView == 'project')"></project-vue> -->
+
+    <router-view class="mainComponent"></router-view>
 
 
     <div class="sidebar-right">
-    <img @click="setView('projects')" class="sidebar-right-item" src="/images/folder_copy.png">
-    <img @click="setView('project')" class="sidebar-right-item" src="/images/folder.png">
-    <img class="sidebar-right-item" src="/images/create_new_folder.png">
+    <router-link to="/projects"><img class="sidebar-right-item" src="/images/folder_copy.png"></router-link>
+    <router-link to="/project"><img class="sidebar-right-item" src="/images/folder.png"></router-link>
+    <router-link to="/newProject"><img class="sidebar-right-item" src="/images/create_new_folder.png"></router-link>
+    <div class="sidebar-placeholder"></div>
+    <img class="sidebar-right-item" src="/images/file_copy.png">
     <img class="sidebar-right-item" src="/images/draft.png">
     <img class="sidebar-right-item" src="/images/note_add.png">
   </div>
@@ -33,9 +37,9 @@ export default {
     }
   },
   components: {
-    SidebarVue,
-    ProjectsVue,
-    ProjectVue
+    // SidebarVue
+    // ProjectsVue,
+    // ProjectVue
   },
   methods: {
     test() {
@@ -110,5 +114,12 @@ export default {
 
   .sidebar-right-item:hover {
     opacity: 0.9;
+  }
+
+  .sidebar-placeholder {
+    background-color: rgba(0, 0, 0, 0.3);
+    height: 2px;
+    width: 60%;
+    margin: 2vh 0;
   }
 </style>

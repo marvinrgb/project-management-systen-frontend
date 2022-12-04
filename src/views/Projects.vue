@@ -1,10 +1,10 @@
 <template>
   <div class="projects-container">
-    <div class="project-box" v-for="project in projects" :key="project.id">
+    <router-link :to="`/project/${project.id}`" class="project-box" v-for="project in projects" :key="project.id">
       <h2>{{project.name}}</h2>
       <p>Description: {{project.description}}</p>
       <p>Genres: {{project.genres}}</p>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -34,7 +34,6 @@
     }
   },
   mounted() {
-    console.log("mounted")
     this.getProjects();
   }}
 </script>
@@ -96,6 +95,10 @@
   .project-box:hover {
     background-color: rgba(255, 255, 255, 0.35);
     box-shadow: inset 0 0 3vh rgba(255, 255, 255, 1);
+  }
+
+  a {
+    text-decoration: none;
   }
 
 </style>
