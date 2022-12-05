@@ -1,6 +1,9 @@
 <template>
   <div class="projects-container">
-    <router-link :to="`/project/${project.id}`" class="project-box" v-for="project in projects" :key="project.id">
+    <div class="no-data" v-if="!apiData.projects">
+      no data
+    </div>
+    <router-link :to="`/project/${project.id}`" class="project-box" v-for="project in apiData.projects" :key="project.id">
       <h2>{{project.name}}</h2>
       <p>Description: {{project.description}}</p>
       <p>Genres: {{project.genres}}</p>
@@ -12,7 +15,7 @@
   export default {
   data() {
     return {
-      projects: Object,
+      apiData: Object,
       apiIp: String
     }
   },
@@ -26,7 +29,7 @@
       })
       .then((res) => res.json())
       .then((data) => {
-        this.projects = data;
+        this.apiData.projects = data;
       })
       .catch((err) => {
         console.log(err)
@@ -43,6 +46,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.no-data {
+  background-color: #ffffff33;
+  height: fit-content;
+  width: fit-content;
+  padding: 2vh 3vw;
+  border-radius: 1.5vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  box-shadow: inset 0 0 1vh #ffffffaa;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .projects-container {
