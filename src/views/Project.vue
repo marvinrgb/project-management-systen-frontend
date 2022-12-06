@@ -1,10 +1,29 @@
 <template>
   <div class="project-container">
     <input id="id-input" class="id-input">
-      <div v-if="project" class="detail-box">
-        <div class="row" v-for="(value, propertyName) in project" v-bind:key="propertyName">
-          <div class="key">{{propertyName}}</div>
-          <div class="value">{{value}}</div>
+      <div v-if="project" id="detail-box" class="detail-box">
+        <div class="row">
+          <div class="key">Name: </div>
+          <input id="project-name" class="value project-edit-input" :value="project.name">
+        </div>
+        <div class="row">
+          <div class="key">Description: </div>
+          <input id="project-description" class="value project-edit-input" :value="project.description">
+        </div>
+        <div class="row">
+          <div class="key">Genres: </div>
+          <div class="value">{{project.genres}}</div>
+        </div>
+        <div class="row">
+          <div class="key">Length: </div>
+          <div class="value">{{project.length}}</div>
+        </div>
+        <div class="row">
+          <div class="key">Date Added: </div>
+          <div class="value">{{dateReadable(project.createdAt)}}</div>
+        </div>
+        <div @click="putProject()" class="glassmo-box" id="project-save-changes">
+          Save Changes
         </div>
       </div>
       <div class="tracks-box">
@@ -18,14 +37,43 @@
 </template>
 
 <style>
+
+.glassmo-box {
+  background-color: #ffffff44;
+  box-shadow: inset 0 0 2vh #ffffffaa;
+  border-radius: 1vh;
+}
+
 .row {
   display: flex;
   height: fit-content;
   margin: 0.5vh 0;
+  user-select: none;
+  font-size: 2.4vh;
 }
 
 .key {
   width: 25%;
+}
+
+#project-save-changes {
+  position: absolute;
+  right: 2vw;
+  bottom: 2vh;
+  /* cursor: pointer; */
+  padding: 1vh 2vh;
+  color: #777;
+  user-select: none;
+}
+
+.project-edit-input {
+  outline: none;
+  border: none;
+  background-color: #00000000;
+}
+
+.value {
+  width: 75%;
 }
 
 .project-container {
@@ -58,13 +106,14 @@
 
 .detail-box {
   margin-top: 2vh;
-  padding: 2vh;
+  padding: 3vh;
   border-radius: 2vh;
   box-shadow: inset 0 0 2vh #ffffffaa;
   background-color: #ffffff44;
   width: 70%;
   align-self: center;
   font-size: 2.5vh;
+  position: relative;
 }
 
 .id-input {
@@ -77,7 +126,7 @@
   min-width: 30%;
   font-size: 2.6vh;
   height: 4vh;
-  background-color: #00000000;
+  /* background-color: #00000000; */
   border: none;
   /* border-bottom: 1px solid rgba(51, 51, 51, 0.3); */
   color: #444;
@@ -90,59 +139,117 @@
 </style>
 
 <script>
-
 export default {
   data() {
     return {
       project: Object,
       apiIp: String,
-      tracks: Object
+      tracks: Object,
+      newProject: Object
     }
   },
   methods: {
-    getProject() {
-    if (isNaN(this.$project)) {
-      return;
-    }
-      fetch(`http://localhost:3100/project/${this.$route.params.projectid}`, {
+    getProject(id) {
+
+
+      let projectId = id || this.$route.params.projectid;
+      if (isNaN(projectId)) {
+        return;
+      }
+
+      projectId = parseInt(projectId);
+
+      fetch(`http://localhost:3100/project/${projectId}`, {
         method: 'GET'
       })
       .then((res) => res.json())
       .then((data) => {
         console.log(data)
         this.project = data;
+        this.newProject = data;
       })
       .catch((err) => {
         console.log(err)
       })
     },
-    getTracksForProject() {
-      if (isNaN(this.$project)) {
+    getTracksForProject(id) {
+
+      let projectId = id || this.$route.params.projectid;
+
+      if (isNaN(projectId)) {
         return;
       }
-      fetch(`http://localhost:3100/tracksByProject/${this.$route.params.projectid}`, {
+
+      projectId = parseInt(projectId);
+
+      fetch(`http://localhost:3100/tracksByProject/${projectId}`, {
         method: 'GET'
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data)
-          this.tracks = data;
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        this.tracks = data;
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    dateReadable(date) {
+      let dat = new Date(date);
+      return `${this.addLeadingZero(dat.getDate())}.${this.addLeadingZero(dat.getMonth() + 1)}.${dat.getFullYear()}`;
+    },
+    addLeadingZero(num) {
+      if (isNaN(num)) {
+        return num;
+      }
+      if (num < 10 && num >= 0) {
+        return `0${num}`
+      } else {
+        return num;
       }
     },
-    mounted() {
-      this.getProject();
-      if (this.$route.params.projectid) {
-        document.getElementById('id-input').value = this.$route.params.projectid;
+    putProject() {
+      let name = document.getElementById('project-name').value;
+      let description = document.getElementById('project-description').value;
+      let data = {
+        "id" : this.project.id,
+        "name" : name,
+        "description" : description
       }
-      this.getTracksForProject();
-      document.getElementById('id-input').addEventListener('keyup', (event) => {
-        this.$project = parseInt(event.target.value);
-        this.getProject();
-        this.getTracksForProject();
+      fetch('http://localhost:3100/project', {
+        "method" : 'PUT',
+        "headers" : {
+          'Content-Type' : 'application/json'
+        },
+        "body" : JSON.stringify(data)
       })
-    }}
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      let button = document.getElementById('project-save-changes');
+      button.style.color = '#777';
+      button.style.cursor = 'default';
+
+      })
+    }
+  },
+  mounted() {
+    this.getProject();
+    if (this.$route.params.projectid) {
+      document.getElementById('id-input').value = this.$route.params.projectid;
+    }
+    this.getTracksForProject();
+    document.getElementById('id-input').addEventListener('keyup', (event) => {
+      let project = parseInt(event.target.value);
+      if (!project) return;
+      this.getProject(project);
+      this.getTracksForProject(project);
+    })
+
+    document.getElementById('detail-box').addEventListener('keyup', (event => {
+      let button = document.getElementById('project-save-changes');
+      button.style.color = '#111';
+      button.style.cursor = 'pointer';
+    }))
+  }}
 </script>

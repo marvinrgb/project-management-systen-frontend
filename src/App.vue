@@ -1,18 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
-// import ProjectsVue from './components/Projects.vue';
-// import SidebarVue from './components/Sidebar.vue';
-// import ProjectVue from './components/Project.vue';
 </script>
 
 <template>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <div id="app">
     <img class="bg-img" src="/images/glassmo_bg.jpg">
-    
-    <!-- <projects-vue class="mainComponent" v-if="(currentView == 'projects')"></projects-vue> -->
 
-    <!-- <project-vue class="mainComponent" v-if="(currentView == 'project')"></project-vue> -->
 
     <router-view class="mainComponent"></router-view>
 

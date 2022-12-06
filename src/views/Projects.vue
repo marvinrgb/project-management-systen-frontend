@@ -1,9 +1,9 @@
 <template>
   <div class="projects-container">
-    <div class="no-data" v-if="!apiData.projects">
+    <!-- <div class="no-data" v-if="!apiData.projects">
       no data
-    </div>
-    <router-link :to="`/project/${project.id}`" class="project-box" v-for="project in apiData.projects" :key="project.id">
+    </div> -->
+    <router-link v-for="project in apiData.projects" :to="`/project/${project.id}`" class="project-box" :key="project.id">
       <h2>{{project.name}}</h2>
       <p>Description: {{project.description}}</p>
       <p>Genres: {{project.genres}}</p>
@@ -16,7 +16,8 @@
   data() {
     return {
       apiData: Object,
-      apiIp: String
+      apiIp: String,
+      key_projects: Boolean
     }
   },
   methods: {
@@ -30,6 +31,7 @@
       .then((res) => res.json())
       .then((data) => {
         this.apiData.projects = data;
+        this.$forceUpdate();
       })
       .catch((err) => {
         console.log(err)
