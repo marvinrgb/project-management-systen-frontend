@@ -16,7 +16,7 @@ import { RouterLink, RouterView } from 'vue-router';
     <router-link to="/project"><img class="sidebar-right-item" src="/images/folder.png"></router-link>
     <router-link to="/newProject"><img class="sidebar-right-item" src="/images/create_new_folder.png"></router-link>
     <div class="sidebar-placeholder"></div>
-    <img class="sidebar-right-item" src="/images/file_copy.png">
+    <router-link to="/tracks"><img class="sidebar-right-item" src="/images/file_copy.png"></router-link>
     <img class="sidebar-right-item" src="/images/draft.png">
     <img class="sidebar-right-item" src="/images/note_add.png">
   </div>
@@ -67,6 +67,15 @@ export default {
     overflow: hidden;
   }
 
+  .app-input {
+    outline: none;
+    border: none;
+  }
+
+  .app-input:focus {
+    outline: none;
+  }
+
   .bg-img {
     height: 100%;
     width: 100%;
@@ -77,7 +86,7 @@ export default {
   .mainComponent {
     height: 80%;
     width: 75%;
-    position: absolute;
+    position: relative;
     left: 50%;
     top: 10%;
     transform: translateX(-50%);

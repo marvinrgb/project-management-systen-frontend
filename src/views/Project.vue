@@ -1,7 +1,7 @@
 <template>
   <div class="project-container">
     <input id="id-input" class="id-input">
-      <div v-if="project" id="detail-box" class="detail-box">
+      <div v-if="project.id" id="detail-box" class="detail-box">
         <div class="row">
           <div class="key">Name: </div>
           <input id="project-name" class="value project-edit-input" :value="project.name">
@@ -157,6 +157,10 @@ export default {
         return;
       }
 
+      if(projectId == 0) {
+        return;
+      }
+
       projectId = parseInt(projectId);
 
       fetch(`http://localhost:3100/project/${projectId}`, {
@@ -229,7 +233,6 @@ export default {
       let button = document.getElementById('project-save-changes');
       button.style.color = '#777';
       button.style.cursor = 'default';
-
       })
     }
   },

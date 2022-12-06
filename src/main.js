@@ -6,6 +6,8 @@ const app = createApp(App)
 
 app.config.globalProperties.$project = 0;
 
+app.config.globalProperties.$backendip = 'localhost:3100';
+
 
 app.use(router)
 
