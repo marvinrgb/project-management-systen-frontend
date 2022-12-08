@@ -152,8 +152,13 @@ export default {
     getProject(id) {
 
 
-      let projectId = id || this.$route.params.projectid;
+      let projectId = document.getElementById('id-input').value;
+      
       if (isNaN(projectId)) {
+        return;
+      }
+
+      if (projectId == '') {
         return;
       }
 
@@ -168,9 +173,19 @@ export default {
       })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        if (!data) {
+          this.project.id = undefined;
+          return;
+        }
         this.project = data;
         this.newProject = data;
+        setTimeout(() => {
+          document.getElementById('detail-box').addEventListener('keyup', (event => {
+            let button = document.getElementById('project-save-changes');
+            button.style.color = '#111';
+            button.style.cursor = 'pointer';
+          }))
+        }, 1)
       })
       .catch((err) => {
         console.log(err)
@@ -178,9 +193,13 @@ export default {
     },
     getTracksForProject(id) {
 
-      let projectId = id || this.$route.params.projectid;
+      let projectId = document.getElementById('id-input').value;
 
       if (isNaN(projectId)) {
+        return;
+      }
+
+      if (projectId == '') {
         return;
       }
 
@@ -191,7 +210,6 @@ export default {
       })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
         this.tracks = data;
       })
       .catch((err) => {
@@ -229,18 +247,17 @@ export default {
       })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-      let button = document.getElementById('project-save-changes');
-      button.style.color = '#777';
-      button.style.cursor = 'default';
+        let button = document.getElementById('project-save-changes');
+        button.style.color = '#777';
+        button.style.cursor = 'default';
       })
     }
   },
   mounted() {
-    this.getProject();
     if (this.$route.params.projectid) {
       document.getElementById('id-input').value = this.$route.params.projectid;
     }
+    this.getProject();
     this.getTracksForProject();
     document.getElementById('id-input').addEventListener('keyup', (event) => {
       let project = parseInt(event.target.value);
@@ -248,11 +265,5 @@ export default {
       this.getProject(project);
       this.getTracksForProject(project);
     })
-
-    document.getElementById('detail-box').addEventListener('keyup', (event => {
-      let button = document.getElementById('project-save-changes');
-      button.style.color = '#111';
-      button.style.cursor = 'pointer';
-    }))
   }}
 </script>
