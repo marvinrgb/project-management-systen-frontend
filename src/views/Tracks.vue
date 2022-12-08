@@ -44,7 +44,7 @@ export default {
       })
     },
     getProjectName(id) {
-      for (let i = 0; i < this.projects.length; i++) {
+      for (let i = 0; i < this.projects.length - 1; i++) {
         if (id == this.projects[i].id) {
           return this.projects[i].name;
         }
@@ -57,6 +57,9 @@ export default {
       .then((data) => {
         this.tracks = data;
       })
+      .catch((err) => {
+        console.log(err);
+      })
     }
   },
   mounted() {
@@ -64,7 +67,10 @@ export default {
     this.getProjects();
     document.getElementById('tracks-input').addEventListener('keyup', (event) => {
       let dat = event.target.value;
-      if (dat == '') return;
+      if (dat == '') {
+        this.getTracks();
+        return;
+      };
       this.getTracksFullText(dat);
     })
   }
