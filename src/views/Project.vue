@@ -163,7 +163,7 @@ export default {
 
       projectId = parseInt(projectId);
 
-      fetch(`http://localhost:3100/project/${projectId}`, {
+      fetch(`http://${this.$backendip}/project/${projectId}`, {
         method: 'GET'
       })
       .then((res) => res.json())
@@ -186,7 +186,7 @@ export default {
 
       projectId = parseInt(projectId);
 
-      fetch(`http://localhost:3100/tracksByProject/${projectId}`, {
+      fetch(`http://${this.$backendip}/tracksByProject/${projectId}`, {
         method: 'GET'
       })
       .then((res) => res.json())
@@ -220,7 +220,7 @@ export default {
         "name" : name,
         "description" : description
       }
-      fetch('http://localhost:3100/project', {
+      fetch(`http://${this.$backendip}/project`, {
         "method" : 'PUT',
         "headers" : {
           'Content-Type' : 'application/json'

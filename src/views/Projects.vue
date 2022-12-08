@@ -22,10 +22,10 @@
   },
   methods: {
     getProjects() {
-      fetch("http://localhost:3100/projects", {
+      fetch(`http://${this.$backendip}/projects`, {
         method: 'GET',
         headers: {
-          'Access-Control-Allow-Origin' : 'http://localhost:3100'
+          'Access-Control-Allow-Origin' : `http://${this.$backendip}`
         }
       })
       .then((res) => res.json())
