@@ -13,11 +13,11 @@ import { RouterLink, RouterView } from 'vue-router';
 
     <div class="sidebar-right">
     <router-link to="/projects"><img class="sidebar-right-item" src="/images/folder_copy.png"></router-link>
-    <router-link to="/project"><img class="sidebar-right-item" src="/images/folder.png"></router-link>
+    <!-- <router-link to="/project"><img class="sidebar-right-item" src="/images/folder.png"></router-link> -->
     <router-link to="/newProject"><img class="sidebar-right-item" src="/images/create_new_folder.png"></router-link>
     <div class="sidebar-placeholder"></div>
     <router-link to="/tracks"><img class="sidebar-right-item" src="/images/file_copy.png"></router-link>
-    <router-link to="/track"><img class="sidebar-right-item" src="/images/draft.png"></router-link>
+    <!-- <router-link to="/track"><img class="sidebar-right-item" src="/images/draft.png"></router-link> -->
     <img class="sidebar-right-item" src="/images/note_add.png">
   </div>
   </div>

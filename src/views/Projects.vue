@@ -1,5 +1,6 @@
 <template>
   <div class="projects-container">
+    <input class="glassmo-box app-input"  id="projects-input" type="text">
     <!-- <div class="no-data" v-if="!apiData.projects">
       no data
     </div> -->
@@ -36,10 +37,36 @@
       .catch((err) => {
         console.log(err)
       })
+    },
+    getProjectsFullText(query) {
+      fetch(`http://${this.$backendip}/projectFullText/${query}`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin' : `http://${this.$backendip}`
+        }
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        this.apiData.projects = data;
+        this.$forceUpdate();
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
   mounted() {
     this.getProjects();
+    let input = document.getElementById('projects-input')
+    input.focus();
+    input.addEventListener('keyup', (event) => {
+      let query = event.target.value;
+      if (query == '') {
+        this.getProjects();
+      } else {
+        this.getProjectsFullText
+      }
+    })
   }}
 </script>
 
@@ -48,6 +75,18 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+#projects-input {
+  position: sticky;
+  width: 50%;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 6vh;
+  grid-column: 1 / span 3;
+  text-align: center;
+  font-size: 3vh;
 }
 
 .no-data {
@@ -70,29 +109,12 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     grid-template-columns: 1fr 1fr 1fr;
+    padding-top: 8vh;
   }
 
   .projects-container::-webkit-scrollbar {
     display: none;
   }
-  
-  /* @media only screen and (min-width: 1000px) {
-    .projects-container {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-  }
-  
-  @media only screen and (max-width: 1000px) and (min-width: 600px) {
-    .projects-container {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  
-  @media only screen and (max-width: 600px) {
-    .projects-container {
-      grid-template-columns: 1fr;
-    }
-  } */
 
   .project-box {
     width: 100%;
