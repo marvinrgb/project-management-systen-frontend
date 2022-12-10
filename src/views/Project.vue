@@ -19,8 +19,8 @@
           <div class="value">{{project.length}}</div>
         </div>
         <div class="row">
-          <div class="key">Date Added: </div>
-          <div class="value">{{dateReadable(project.createdAt)}}</div>
+          <div class="key">Release Date: </div>
+          <input :value="project.releaseDate" id="project-releasedate" class="value track-releasedate app-input" type="date">
         </div>
         <div @click="putProject()" class="glassmo-box save-changes-button" id="project-save-changes">
           Save Changes
@@ -137,6 +137,7 @@
 </style>
 
 <script>
+import { nextTick } from '@vue/runtime-core';
 export default {
   data() {
     return {
@@ -170,20 +171,24 @@ export default {
         method: 'GET'
       })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (!data) {
           this.project.id = undefined;
           return;
         }
         this.project = data;
         this.newProject = data;
-        setTimeout(() => {
-          document.getElementById('detail-box').addEventListener('keyup', (event => {
-            let button = document.getElementById('project-save-changes');
-            button.style.color = '#111';
-            button.style.cursor = 'pointer';
-          }))
-        }, 1)
+        await nextTick();
+        document.getElementById('detail-box').addEventListener('keyup', (event => {
+          let button = document.getElementById('project-save-changes');
+          button.style.color = '#111';
+          button.style.cursor = 'pointer';
+        }))
+        document.getElementById('detail-box').addEventListener('change', (event => {
+          let button = document.getElementById('project-save-changes');
+          button.style.color = '#111';
+          button.style.cursor = 'pointer';
+        }))
       })
       .catch((err) => {
         console.log(err)
@@ -231,10 +236,12 @@ export default {
     putProject() {
       let name = document.getElementById('project-name').value;
       let description = document.getElementById('project-description').value;
+      let releaseDate = document.getElementById('project-releasedate').value;
       let data = {
         "id" : this.project.id,
         "name" : name,
-        "description" : description
+        "description" : description,
+        "releaseDate" : releaseDate
       }
       fetch(`http://${this.$backendip}/project`, {
         "method" : 'PUT',
@@ -243,7 +250,10 @@ export default {
         },
         "body" : JSON.stringify(data)
       })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.status);
+        res.json();
+      })
       .then((data) => {
         let button = document.getElementById('project-save-changes');
         button.style.color = '#777';

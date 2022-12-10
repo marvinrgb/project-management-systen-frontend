@@ -18,7 +18,7 @@ import { RouterLink, RouterView } from 'vue-router';
     <div class="sidebar-placeholder"></div>
     <router-link to="/tracks"><img class="sidebar-right-item" src="/images/file_copy.png"></router-link>
     <!-- <router-link to="/track"><img class="sidebar-right-item" src="/images/draft.png"></router-link> -->
-    <img class="sidebar-right-item" src="/images/note_add.png">
+    <router-link to="/newTrack"><img class="sidebar-right-item" src="/images/note_add.png"></router-link>
   </div>
   </div>
 </template>

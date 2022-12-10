@@ -51,7 +51,6 @@ export default {
 </script>
 
 <style>
-
 #newproject-send {
   margin: 5vh auto;
   padding: 2vh 3vw;
