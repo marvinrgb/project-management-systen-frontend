@@ -30,7 +30,7 @@ const router = createRouter({
       component: Tracks
     },
     {
-      path: '/track',
+      path: '/track/:trackid',
       component: Track
     }
   ]

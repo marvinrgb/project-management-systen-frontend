@@ -67,9 +67,20 @@ export default {
     overflow: hidden;
   }
 
+  .glassmo-box {
+    background-color: #ffffff44;
+    box-shadow: inset 0 0 2vh #ffffffaa;
+    border-radius: 1vh;
+  }
+
   .app-input {
     outline: none;
     border: none;
+    background-color: #00000000;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   .app-input:focus {

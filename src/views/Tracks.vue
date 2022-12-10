@@ -9,13 +9,13 @@
         <div class="tracks-track-length">Length</div>
         <div class="tracks-track-projectid">Project</div>
       </div>
-      <div class="glassmo-box tracks-row" v-for="track in tracks" :key="track.id">
+      <router-link :to="`/track/${track.id}`" class="glassmo-box tracks-row" v-for="track in tracks" :key="track.id">
         <div class="tracks-track-name">{{track.name}}</div>
         <div class="tracks-track-description">{{track.description}}</div>
         <div class="tracks-track-genre">{{track.genre}}</div>
         <div class="tracks-track-length">{{track.length}}</div>
         <div class="tracks-track-projectid">{{getProjectName(track.projectId)}}</div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -106,6 +106,11 @@ export default {
   margin: 2vh;
   padding: 1vh 1vw;
   display: flex;
+  color: rgb(71, 50, 80);
+}
+
+.tracks-row:hover:not(.tracks-headerrow) {
+  box-shadow: inset 0 0 2vh #ffffffff;
 }
 
 .tracks-container {

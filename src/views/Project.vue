@@ -22,7 +22,7 @@
           <div class="key">Date Added: </div>
           <div class="value">{{dateReadable(project.createdAt)}}</div>
         </div>
-        <div @click="putProject()" class="glassmo-box" id="project-save-changes">
+        <div @click="putProject()" class="glassmo-box save-changes-button" id="project-save-changes">
           Save Changes
         </div>
       </div>
@@ -38,12 +38,6 @@
 
 <style>
 
-.glassmo-box {
-  background-color: #ffffff44;
-  box-shadow: inset 0 0 2vh #ffffffaa;
-  border-radius: 1vh;
-}
-
 .row {
   display: flex;
   height: fit-content;
@@ -55,8 +49,11 @@
 .key {
   width: 25%;
 }
-
+/* 
 #project-save-changes {
+} */
+
+.save-changes-button {
   position: absolute;
   right: 2vw;
   bottom: 2vh;
@@ -64,6 +61,7 @@
   padding: 1vh 2vh;
   color: #777;
   user-select: none;
+
 }
 
 .project-edit-input {
