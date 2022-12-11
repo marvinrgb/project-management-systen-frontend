@@ -19,7 +19,7 @@
       </div>
       <div class="newproject-row">
         <div class="newproject-key">Release Date:</div>
-        <input id="newproject-input-releasedate" type="text" class="newproject-value">
+        <input id="newproject-input-releasedate" type="date" class="newproject-value">
       </div>
       <div class="newproject-row">
         <div @click="postTrack()" class="glassmo-box" id="newproject-send">Send</div>
@@ -35,7 +35,7 @@ export default {
       let name = document.getElementById('newproject-input-name').value;
       let description = document.getElementById('newproject-input-description').value;
       let genre = document.getElementById('newproject-input-genre').value;
-      let length = document.getElementById('newproject-input-length').value;
+      let length = parseInt(document.getElementById('newproject-input-length').value);
       let releasedate = document.getElementById('newproject-input-releasedate').value;
 
       let data = {
@@ -43,20 +43,17 @@ export default {
         "description" : description,
         "genre" : genre,
         "length" : length,
-        "releasedate" : releasedate
+        "releaseDate" : releasedate
       }
 
-      fetch(`http://${this.$backendip}/newTrack`, {
-        method: 'PUT',
+      fetch(`http://${this.$backendip}/track`, {
+        method: 'POST',
         headers: {
           'Content-Type' : 'application/json'
         },
         body: JSON.stringify(data)
       })
-      .then((res) => {
-        console.log(res.status);
-        res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         console.log(data);
         if (data.id) {
