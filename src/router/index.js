@@ -1,15 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Project from '../views/Project.vue'
-import newProject from '../views/newProject.vue'
-import Projects from '../views/Projects.vue'
-import Tracks from '../views/Tracks.vue'
-import Track from '../views/Track.vue'
-import newTrack from '../views/newTrack.vue'
-  
+import Project from '../components/Project.vue'
+import newProject from '../components/newProject.vue'
+import Projects from '../components/Projects.vue'
+import Tracks from '../components/Tracks.vue'
+import Track from '../components/Track.vue'
+import newTrack from '../components/newTrack.vue'
+
 const router = createRouter({
+  mode: history,
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      component: Projects
+    },
     {
       path: '/projects',
       component: Projects
