@@ -24,10 +24,15 @@ import { RouterLink, RouterView } from 'vue-router';
 </template>
 
 <script>
+
+import Oidc from "oidc-client";
 export default {
   data() {
     return {
-      currentView: String
+      currentView: String,
+      accessToken: String,
+      oidcClient: Object,
+      clientConfig: Object,
     }
   },
   components: {
@@ -49,6 +54,40 @@ export default {
   mounted() {
     this.setProject();
     this.currentView = 'projects';
+
+    
+    this.clientConfig = {
+      authority: process.env.VUE_APP_OIDC_PROVIDER,
+      client_id: process.env.VUE_APP_CLIENT_ID,
+      redirect_uri: process.env.VUE_APP_REDIRECT_URL,
+      response_type: "id_token token",
+      scope: "openid",
+      userStore: new Oidc.WebStorageStateStore({}),
+      post_logout_redirect_uri: process.env.VUE_APP_REDIRECT_URL,
+    };
+    this.oidcClient = new Oidc.UserManager(this.clientConfig);
+    this.oidcClient
+      .signinRedirectCallback()
+      .then(() => {
+        console.log("Signin Redirect erfolgreich");
+        this.oidcClient.getUser().then((user) => {
+          this.username = user?.profile.name;
+          this.accessToken = user?.access_token;
+        });
+      })
+      .catch(() => {
+        console.log("Fehler beim Signin Redirect");
+      });
+
+    this.oidcClient
+      .getUser()
+      .then((user) => {
+        this.username = user?.profile.name;
+        this.accessToken = user?.access_token;
+      })
+      .catch(() => {
+        this.username = "";
+      });
   }
 }
 </script>
