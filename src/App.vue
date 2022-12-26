@@ -10,6 +10,11 @@ import { RouterLink, RouterView } from 'vue-router';
 
     <router-view class="mainComponent"></router-view>
 
+    <div id="login-box">
+      <div>{{ username }}</div>
+      <div v-if="username" @click="LogoutUser()">Logout</div>
+      <div v-else @click="LoginUser()">Login</div>
+    </div>
 
     <div class="sidebar-right">
     <router-link to="/projects"><img class="sidebar-right-item" src="/images/folder_copy.png"></router-link>
@@ -19,6 +24,7 @@ import { RouterLink, RouterView } from 'vue-router';
     <router-link to="/tracks"><img class="sidebar-right-item" src="/images/file_copy.png"></router-link>
     <!-- <router-link to="/track"><img class="sidebar-right-item" src="/images/draft.png"></router-link> -->
     <router-link to="/newTrack"><img class="sidebar-right-item" src="/images/note_add.png"></router-link>
+    <div @click="LoginUser()">LOGIN</div>
   </div>
   </div>
 </template>
@@ -33,6 +39,7 @@ export default {
       accessToken: String,
       oidcClient: Object,
       clientConfig: Object,
+      username: String
     }
   },
   components: {
@@ -49,6 +56,18 @@ export default {
     },
     setView(view) {
       this.currentView = view;
+    },
+    LoginUser() { //Hiermit loggt man sich auf dem Admininterface ein
+      console.log('LoginUser()')
+      this.oidcClient.signinRedirect().catch((error) => {
+        console.log("Fehler beim Login!");
+        console.log(error);
+      });
+    },
+    LogoutUser() { //Hiermit Meldet man sich vom Admininterface ab
+      this.oidcClient.signoutRedirect().catch(() => {
+        console.log("Fehler beim Logout!");
+      });
     }
   },
   mounted() {
@@ -57,13 +76,13 @@ export default {
 
     
     this.clientConfig = {
-      authority: process.env.VUE_APP_OIDC_PROVIDER,
-      client_id: process.env.VUE_APP_CLIENT_ID,
-      redirect_uri: process.env.VUE_APP_REDIRECT_URL,
+      authority: 'http://localhost:8082/realms/OIDC-Demo',
+      client_id: 'project-ms',
+      redirect_uri: 'http://localhost:3000',
       response_type: "id_token token",
       scope: "openid",
       userStore: new Oidc.WebStorageStateStore({}),
-      post_logout_redirect_uri: process.env.VUE_APP_REDIRECT_URL,
+      post_logout_redirect_uri: 'http://localhost:3000',
     };
     this.oidcClient = new Oidc.UserManager(this.clientConfig);
     this.oidcClient
@@ -71,6 +90,7 @@ export default {
       .then(() => {
         console.log("Signin Redirect erfolgreich");
         this.oidcClient.getUser().then((user) => {
+          console.log(user);
           this.username = user?.profile.name;
           this.accessToken = user?.access_token;
         });
@@ -93,6 +113,12 @@ export default {
 </script>
 
 <style>
+  #login-box {
+   position: absolute;
+   top: 2vh;
+   right: 2vw; 
+  }
+
   * {
     margin: 0;
     padding: 0;
