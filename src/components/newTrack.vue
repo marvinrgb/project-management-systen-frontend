@@ -34,9 +34,9 @@ export default {
     postTrack() {
       let name = document.getElementById('newproject-input-name').value;
       let description = document.getElementById('newproject-input-description').value;
-      let genre = document.getElementById('newproject-input-genre').value;
-      let length = parseInt(document.getElementById('newproject-input-length').value);
-      let releasedate = document.getElementById('newproject-input-releasedate').value;
+      let genre = document.getElementById('newproject-input-genre').value || 'default';
+      let length = parseInt(document.getElementById('newproject-input-length').value) || 0;
+      let releasedate = document.getElementById('newproject-input-releasedate').value || '2022-01-01';
 
       let data = {
         "name" : name,

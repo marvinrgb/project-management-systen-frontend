@@ -16,7 +16,7 @@
         </div>
         <div class="row">
           <div class="key">Length: </div>
-          <div class="value">{{project.length}}</div>
+          <div class="value">{{totalLength}}</div>
         </div>
         <div class="row">
           <div class="key">Release Date: </div>
@@ -27,11 +27,11 @@
         </div>
       </div>
       <div class="tracks-box">
-        <div class="track-row" v-for="(value, index) in tracks" v-bind:key="index">
+        <router-link :to="`/track/${value.id}`" class="track-row" v-for="(value, index) in tracks" v-bind:key="index">
           <div class="track-name">{{value.name}}</div>
           <div class="track-genre">{{value.genre}}</div>
           <div>{{value.length}}</div>
-        </div>
+        </router-link>
       </div>
   </div>
 </template>
@@ -100,6 +100,12 @@
   border-radius: 2vh;
   box-shadow: inset 0 0 2vh #ffffffaa;
   background-color: #ffffff44;
+  color: rgb(51, 51, 51);
+}
+
+a {
+  text-decoration: none;
+  color: rgb(51, 51, 51);
 }
 
 .detail-box {
@@ -144,7 +150,8 @@ export default {
       project: Object,
       apiIp: String,
       tracks: Object,
-      newProject: Object
+      newProject: Object,
+      totalLength: String
     }
   },
   methods: {
@@ -214,8 +221,13 @@ export default {
       .then((res) => res.json())
       .then((data) => {
         this.tracks = data;
+        let lengthCounterSec = 0;
+        for (let i = 0; i < data.length; i++) {
+          lengthCounterSec += data[i].length;
+        }
+        this.totalLength = `${Math.floor(lengthCounterSec / 60)}min ${lengthCounterSec % 60}sec`
       })
-      .catch((err) => {
+      .catch((err) => { - 
         console.log(err)
       })
     },

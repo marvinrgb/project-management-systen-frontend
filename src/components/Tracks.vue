@@ -44,10 +44,14 @@ export default {
       })
     },
     getProjectName(id) {
-      for (let i = 0; i < this.projects.length - 1; i++) {
-        if (id == this.projects[i].id) {
-          return this.projects[i].name;
+      try {
+        for (let i = 0; i < this.projects.length; i++) {
+          if (id == this.projects[i].id) {
+            return this.projects[i].name;
+          }
         }
+      } catch (error) {
+        
       }
       return 'no data'
     },
