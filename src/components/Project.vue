@@ -12,7 +12,7 @@
         </div>
         <div class="row">
           <div class="key">Genres: </div>
-          <div class="value">{{project.genres}}</div>
+          <div class="value"><span v-for="(value, index) in genres" v-bind:key="index">{{ value }}<span v-if="index < genres.length-1">{{ ", " }}</span></span></div>
         </div>
         <div class="row">
           <div class="key">Length: </div>
@@ -22,15 +22,29 @@
           <div class="key">Release Date: </div>
           <input :value="project.releaseDate" id="project-releasedate" class="value track-releasedate app-input" type="date">
         </div>
+        <div @click="deleteProject()" class="glassmo-box delete-project-button" id="project-delete">
+          Delete Project
+        </div>
         <div @click="putProject()" class="glassmo-box save-changes-button" id="project-save-changes">
           Save Changes
         </div>
       </div>
       <div class="tracks-box">
+        <div class="track-row track-row-header">
+          <div class="track-name">Name</div>
+          <div class="track-genre">Genre</div>
+          <div class="track-genre">Sec Genre</div>
+          <div class="track-explicit">Explicit/Clean</div>
+          <div>Length</div>
+        </div>
         <router-link :to="`/track/${value.id}`" class="track-row" v-for="(value, index) in tracks" v-bind:key="index">
           <div class="track-name">{{value.name}}</div>
           <div class="track-genre">{{value.genre}}</div>
-          <div>{{value.length}}</div>
+          <div class="track-genre">{{value.secGenre}}</div>
+          <div class="track-explicit"><span v-if="value.explicit">Explicit</span><span v-else>Clean</span></div>
+          <div>
+            {{Math.floor(value.length/60)}}min {{value.length%60}}sec
+          </div>
         </router-link>
       </div>
   </div>
@@ -61,7 +75,16 @@
   padding: 1vh 2vh;
   color: #777;
   user-select: none;
+}
 
+.delete-project-button {
+  position: absolute;
+  right: 2vw;
+  top: 2vh;
+  cursor: pointer;
+  padding: 1vh 2vh;
+  color: rgb(40, 40, 40);
+  user-select: none;
 }
 
 .project-edit-input {
@@ -85,7 +108,11 @@
 }
 
 .track-genre {
-  width: 25%;
+  width: 10%;
+}
+
+.track-explicit {
+  width: 18%;
 }
 
 .tracks-box {
@@ -101,6 +128,12 @@
   box-shadow: inset 0 0 2vh #ffffffaa;
   background-color: #ffffff44;
   color: rgb(51, 51, 51);
+}
+
+.track-row-header {
+  text-decoration: underline;
+  padding: 1.5vh 2vh;
+  font-size: 2.2vh;
 }
 
 a {
@@ -151,7 +184,8 @@ export default {
       apiIp: String,
       tracks: Object,
       newProject: Object,
-      totalLength: String
+      totalLength: String,
+      genres: Array
     }
   },
   methods: {
@@ -222,8 +256,15 @@ export default {
       .then((data) => {
         this.tracks = data;
         let lengthCounterSec = 0;
+        this.genres = [];
         for (let i = 0; i < data.length; i++) {
           lengthCounterSec += data[i].length;
+          if (!this.genres.includes(data[i].genre) && data[i].genre != 'default') {
+            this.genres.push(data[i].genre)
+          }
+          if (!this.genres.includes(data[i].secGenre) && data[i].secGenre != 'default') {
+            this.genres.push(data[i].secGenre)
+          }
         }
         this.totalLength = `${Math.floor(lengthCounterSec / 60)}min ${lengthCounterSec % 60}sec`
       })
@@ -271,6 +312,18 @@ export default {
         button.style.color = '#777';
         button.style.cursor = 'default';
       })
+    },
+    deleteProject() {
+      if (confirm('Do you really want to delete this project forever?')) {
+        console.log({ 'id' : this.project.id })
+        fetch(`http://${this.$backendip}/project`, {
+          method: 'DELETE',
+          headers : {
+            'Content-Type' : 'application/json'
+          },
+          body: JSON.stringify({ 'id' : this.project.id })
+        })
+      }
     }
   },
   mounted() {

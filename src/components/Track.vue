@@ -10,11 +10,25 @@
       </div>
       <div class="row">
         <div class="key">Genre: </div>
-        <input id="track-genre" class="value app-input" :value="track.genre">
+        <select class="app-input" name="track-genre-select" id="track-genre" :value="track.genre">
+          <option v-for="genre in genres" :key="genre" :value="genre">{{genre}}</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="key">Secondary Genre: </div>
+        <select class="app-input" name="track-genre-select" id="track-secgenre" :value="track.secGenre">
+          <option v-for="genre in genres" :key="genre" :value="genre">{{genre}}</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="key">Explicit: </div>
+        <input id="track-explicit-checkbox" v-if="track.explicit" type="checkbox" checked>
+        <input id="track-explicit-checkbox" v-else type="checkbox">
       </div>
       <div class="row">
         <div class="key">Length: </div>
-        <input id="track-length" class="value app-input" :value="track.length">
+        <input :value="`${Math.floor(track.length/60)}`" id="track-input-length-min" type="text" class="newproject-value">min
+        <input :value="`${track.length%60}`" id="track-input-length-sec" type="text" class="newproject-value">sec
       </div>
       <div class="row">
         <div class="key">Release Date: </div>
@@ -26,16 +40,15 @@
           <option v-for="project in projects" :key="project.id" :value="project.id">{{project.name}}</option>
         </select>
       </div>
+      <div @click="deleteTrack()" class="glassmo-box delete-project-button" id="project-delete">
+        Delete Track
+      </div>
       <div class="glassmo-box save-changes-button" id="track-save-changes">
         Save Changes
       </div>
     </div>
   </div>  
 </template>
-
-<style>
-
-</style>
 
 <script>
 import { nextTick } from '@vue/runtime-core';
@@ -44,7 +57,8 @@ export default {
     return {
       track: Object,
       newTrack: Object,
-      projects: Object
+      projects: Object,
+      genres: Array
     }
   },
   methods: {
@@ -80,12 +94,11 @@ export default {
         if (event.key == 'Enter') return
         this.newTrack.name = document.getElementById('track-name').value;
         this.newTrack.description = document.getElementById('track-description').value;
-        this.newTrack.genre = document.getElementById('track-genre').value;
-        if (document.getElementById('track-length').value == '') {
-        } else if (isNaN(parseInt(document.getElementById('track-length').value))) {
+        if (document.getElementById('track-input-length-min').value == '' || document.getElementById('track-input-length-sec').value == '') {
+        } else if (isNaN(parseInt(document.getElementById('track-input-length-min').value)) || isNaN(parseInt(document.getElementById('track-input-length-sec').value))) {
           alert('length must only contain numeric characters');
         } else {
-          this.newTrack.length = parseInt(document.getElementById('track-length').value);
+          this.newTrack.length = parseInt(document.getElementById('track-input-length-min').value) * 60 + parseInt(document.getElementById('track-input-length-sec').value);
         }
         let saveButton = document.getElementById('track-save-changes')
         saveButton.style.color = '#111';
@@ -94,6 +107,9 @@ export default {
       detailBox.addEventListener('change', (event) => {
         this.newTrack.releaseDate = document.getElementById('track-releasedate').value;
         this.newTrack.projectId = parseInt(document.getElementById('track-projectId').value);
+        this.newTrack.genre = document.getElementById('track-genre').value;
+        this.newTrack.secGenre = document.getElementById('track-secgenre').value;
+        this.newTrack.explicit = document.getElementById('track-explicit-checkbox').checked;
         console.log(this.newTrack.projectId);
         let saveButton = document.getElementById('track-save-changes')
         saveButton.style.color = '#111';
@@ -108,7 +124,9 @@ export default {
         'genre' : this.newTrack.genre,
         'length' : this.newTrack.length,
         'releaseDate' : this.newTrack.releaseDate,
-        'projectId' : this.newTrack.projectId
+        'projectId' : this.newTrack.projectId,
+        'secGenre' : this.newTrack.secGenre,
+        'explicit' : this.newTrack.explicit
       }
       fetch(`http://${this.$backendip}/track`, {
         method: 'PUT',
@@ -142,11 +160,39 @@ export default {
       .catch((err) => {
         console.log(err)
       })
+    },
+    getGenres() {
+      fetch(`http://${this.$backendip}/genres`)
+      .then((res) => res.json())
+      .then((data) => {
+        this.genres = data;
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    deleteTrack() {
+      if (confirm('Do you really want to delete this track forever?')) {
+        console.log({ 'id' : this.track.id })
+        fetch(`http://${this.$backendip}/track`, {
+          method: 'DELETE',
+          headers : {
+            'Content-Type' : 'application/json'
+          },
+          body: JSON.stringify({ 'id' : this.track.id })
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            window.location.href = "/tracks"
+          }
+        })
+      }
     }
   },
   mounted() {
     this.getProjects();
     this.getTrack();
+    this.getGenres();
   }
 }
 </script>
@@ -187,5 +233,24 @@ export default {
 .track-releasedate {
   width: fit-content;
   background-color: #00000000;
+}
+
+.delete-project-button {
+  position: absolute;
+  right: 2vw;
+  top: 2vh;
+  cursor: pointer;
+  padding: 1vh 2vh;
+  color: rgb(40, 40, 40);
+  user-select: none;
+}
+
+#track-input-length-min {
+  width: 3%;
+}
+
+#track-input-length-sec {
+  width: 3%;
+  margin-left: 2%;
 }
 </style>

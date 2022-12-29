@@ -11,11 +11,24 @@
       </div>
       <div class="newproject-row">
         <div class="newproject-key">Genre:</div>
-        <input id="newproject-input-genre" type="text" class="newproject-value">
+        <select class="app-input" name="track-genre-select" id="newproject-input-genre" value="default">
+          <option v-for="genre in genres" :key="genre" :value="genre">{{genre}}</option>
+        </select>      
+      </div>
+      <div class="newproject-row">
+        <div class="newproject-key">Secondary Genre:</div>
+        <select class="app-input" name="track-genre-select" id="newproject-input-secgenre" value="default">
+          <option v-for="genre in genres" :key="genre" :value="genre">{{genre}}</option>
+        </select>      
       </div>
       <div class="newproject-row">
         <div class="newproject-key">Length:</div>
-        <input id="newproject-input-length" type="text" class="newproject-value">
+        <input id="newproject-input-length-min" type="text" class="newproject-value">min
+        <input id="newproject-input-length-sec" type="text" class="newproject-value">sec
+      </div>
+      <div class="newproject-row">
+        <div class="newproject-key">Explicit:</div>
+        <input id="newproject-input-explicit" type="checkbox" class="newproject-value">
       </div>
       <div class="newproject-row">
         <div class="newproject-key">Release Date:</div>
@@ -30,20 +43,30 @@
 
 <script>
 export default {
+  data() {
+    return {
+      genres: Array
+    }
+  },
   methods: {
     postTrack() {
       let name = document.getElementById('newproject-input-name').value;
       let description = document.getElementById('newproject-input-description').value;
-      let genre = document.getElementById('newproject-input-genre').value || 'default';
-      let length = parseInt(document.getElementById('newproject-input-length').value) || 0;
+      let genre = document.getElementById('newproject-input-genre').value;
+      let secGenre = document.getElementById('newproject-input-secgenre').value;
+      let lengthmin = parseInt(document.getElementById('newproject-input-length-min').value) || 0;
+      let lengthsec = parseInt(document.getElementById('newproject-input-length-sec').value) || 0;
       let releasedate = document.getElementById('newproject-input-releasedate').value || '2022-01-01';
+      let explicit = document.getElementById('newproject-input-explicit').checked;
 
       let data = {
         "name" : name,
         "description" : description,
         "genre" : genre,
-        "length" : length,
-        "releaseDate" : releasedate
+        "secGenre" : secGenre,
+        "length" : lengthmin * 60 + lengthsec,
+        "releaseDate" : releasedate,
+        "explicit" : explicit
       }
 
       fetch(`http://${this.$backendip}/track`, {
@@ -66,7 +89,20 @@ export default {
         }
       })
 
+    },
+    getGenres() {
+      fetch(`http://${this.$backendip}/genres`)
+      .then((res) => res.json())
+      .then((data) => {
+        this.genres = data;
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
+  },
+  mounted() {
+    this.getGenres();
   }
 }
 </script>
@@ -78,6 +114,20 @@ export default {
 
 .newproject-key {
   width: 40%;
+}
+
+#newproject-input-length-min {
+  width: 4%;
+}
+
+#newproject-input-length-sec {
+  width: 4%;
+  margin-left: 2%;
+}
+
+#newproject-input-explicit {
+  margin-right: 40%;
+  background-color: #00000000;
 }
 
 </style>
