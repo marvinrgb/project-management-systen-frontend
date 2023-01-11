@@ -1,8 +1,13 @@
 <template>
   <div class="project-container">
     <input id="id-input" class="id-input">
-      <div v-if="project.id" id="detail-box" class="detail-box">
-        <div class="row">
+    <div v-if="project.id" id="detail-box" class="detail-box">
+      <div style="display: flex;">
+        <div class="glassmo-box project-track-amount">Tracks: {{ trackAmount }}</div> 
+        <router-link :to="`/newTrack/${project.id}`" class="glassmo-box project-track-new">New Track</router-link> 
+
+      </div>
+      <div class="row">
           <div class="key">Name: </div>
           <input id="project-name" class="value project-edit-input" :value="project.name">
         </div>
@@ -118,6 +123,13 @@
 .tracks-box {
   width: 80%;
   align-self: center;
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.tracks-box::-webkit-scrollbar {
+  display: none;
 }
 
 .track-row {
@@ -173,6 +185,21 @@ a {
   outline: none;
 }
 
+.project-track-amount {
+  padding: 1vh 1vw;
+  width: fit-content;
+  margin-bottom: 3vh;
+}
+
+.project-track-new {
+  padding: 1vh 1vw;
+  width: fit-content;
+  margin-bottom: 3vh;
+  margin-left: 1vw;
+  user-select: none;
+  cursor: pointer;
+}
+
 </style>
 
 <script>
@@ -185,7 +212,8 @@ export default {
       tracks: Object,
       newProject: Object,
       totalLength: String,
-      genres: Array
+      genres: Array,
+      trackAmount: Number
     }
   },
   methods: {
@@ -255,6 +283,7 @@ export default {
       .then((res) => res.json())
       .then((data) => {
         this.tracks = data;
+        this.trackAmount = data.length;
         let lengthCounterSec = 0;
         this.genres = [];
         for (let i = 0; i < data.length; i++) {

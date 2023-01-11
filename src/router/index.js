@@ -42,6 +42,10 @@ const router = createRouter({
     {
       path: '/newTrack',
       component: newTrack
+    },
+    {
+      path: '/newTrack/:newtrackprojectid',
+      component: newTrack
     }
   ]
 })

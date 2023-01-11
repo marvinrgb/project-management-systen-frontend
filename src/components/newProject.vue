@@ -24,7 +24,8 @@ export default {
       let description = document.getElementById('newproject-input-description').value;
       let body = {
           "name" : name,
-          "description" : description
+          "description" : description,
+          "user" : this.$user
         }
       fetch('http://localhost:3100/project', {
         method: 'POST',

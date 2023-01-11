@@ -22,6 +22,12 @@
         </select>      
       </div>
       <div class="newproject-row">
+        <div class="newproject-key">Project:</div>
+        <select class="app-input" name="track-project-select" id="newproject-input-projectid" value="default">
+          <option v-for="project in apiData.projects" :key="project.id" :selected="(isSelected(project.id))" :value="project.id">{{project.name}}</option>
+        </select>      
+      </div>
+      <div class="newproject-row">
         <div class="newproject-key">Length:</div>
         <input id="newproject-input-length-min" type="text" class="newproject-value">min
         <input id="newproject-input-length-sec" type="text" class="newproject-value">sec
@@ -42,13 +48,35 @@
 </template>
 
 <script>
+import { nextTick } from '@vue/runtime-core';
 export default {
   data() {
     return {
-      genres: Array
+      genres: Array,
+      apiData: Object,
+      selectedOption: String
     }
   },
   methods: {
+    getProjects() {
+      fetch(`http://${this.$backendip}/projects`, {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin' : `http://${this.$backendip}`
+        }
+      })
+      .then((res) => res.json())
+      .then(async (data) => {
+        this.apiData.projects = data;
+        this.$forceUpdate();
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    isSelected(option) {
+      return option == this.selectedOption;
+    },
     postTrack() {
       let name = document.getElementById('newproject-input-name').value;
       let description = document.getElementById('newproject-input-description').value;
@@ -58,6 +86,7 @@ export default {
       let lengthsec = parseInt(document.getElementById('newproject-input-length-sec').value) || 0;
       let releasedate = document.getElementById('newproject-input-releasedate').value || '2022-01-01';
       let explicit = document.getElementById('newproject-input-explicit').checked;
+      let projectId = parseInt(document.getElementById('newproject-input-projectid').value);
 
       let data = {
         "name" : name,
@@ -66,7 +95,9 @@ export default {
         "secGenre" : secGenre,
         "length" : lengthmin * 60 + lengthsec,
         "releaseDate" : releasedate,
-        "explicit" : explicit
+        "explicit" : explicit,
+        "projectId" : projectId,
+        "user" : this.$user
       }
 
       fetch(`http://${this.$backendip}/track`, {
@@ -79,6 +110,10 @@ export default {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        if (this.$route.params.newtrackprojectid) {
+          window.location.replace(`http://localhost:3000/project/${this.$route.params.newtrackprojectid}`)
+          return;
+        }
         if (data.id) {
           window.location.replace(`http://localhost:3000/track/${data.id}`)
         }
@@ -99,10 +134,12 @@ export default {
       .catch((err) => {
         console.log(err)
       })
-    }
+    },
   },
   mounted() {
     this.getGenres();
+    this.getProjects();
+    this.selectedOption = this.$route.params.newtrackprojectid || 1;
   }
 }
 </script>

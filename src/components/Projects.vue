@@ -1,29 +1,28 @@
 <template>
   <div class="projects-container">
     <input class="glassmo-box app-input"  id="projects-input" type="text">
-    <!-- <div class="no-data" v-if="!apiData.projects">
-      no data
-    </div> -->
     <router-link v-for="project in apiData.projects" :to="`/project/${project.id}`" class="project-box" :key="project.id">
       <h2>{{project.name}}</h2>
       <p>Description: {{project.description}}</p>
-      <p>Genres: {{project.genres}}</p>
     </router-link>
   </div>
 </template>
 
 <script>
+import { nextTick } from '@vue/runtime-core';
   export default {
   data() {
     return {
       apiData: Object,
       apiIp: String,
-      key_projects: Boolean
+      key_projects: Boolean,
+      genres: Array
     }
   },
   methods: {
     getProjects() {
-      fetch(`http://${this.$backendip}/projects`, {
+      console.log(this.$user + Date.now())
+      fetch(`http://${this.$backendip}/projects/${this.$user}`, {
         method: 'GET',
         headers: {
           'Access-Control-Allow-Origin' : `http://${this.$backendip}`
@@ -55,19 +54,21 @@
       })
     }
   },
-  mounted() {
-    this.getProjects();
-    let input = document.getElementById('projects-input')
-    input.focus();
-    input.addEventListener('keyup', (event) => {
-      let query = event.target.value;
-      // console.log()
-      if (query == '') {
-        this.getProjects();
-      } else {
-        this.getProjectsFullText(query);
-      }
-    })
+  async mounted() {
+    setTimeout(() => {
+      this.getProjects();
+      let input = document.getElementById('projects-input')
+      input.focus();
+      input.addEventListener('keyup', (event) => {
+        let query = event.target.value;
+        // console.log()
+        if (query == '') {
+          this.getProjects();
+        } else {
+          this.getProjectsFullText(query);
+        }
+      })
+    }, 1000);
   }}
 </script>
 

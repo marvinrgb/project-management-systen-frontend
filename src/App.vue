@@ -92,7 +92,9 @@ export default {
         this.oidcClient.getUser().then((user) => {
           console.log(user);
           this.username = user?.profile.name;
+          this.$user = user?.profile.preferred_username;
           this.accessToken = user?.access_token;
+          this.$accesstok = user?.access_token;
         });
       })
       .catch(() => {
@@ -102,8 +104,11 @@ export default {
     this.oidcClient
       .getUser()
       .then((user) => {
+        console.log(user?.profile.preferred_username + Date.now())
         this.username = user?.profile.name;
+        this.$user = user?.profile.preferred_username;
         this.accessToken = user?.access_token;
+        this.$accesstok = user?.access_token;
       })
       .catch(() => {
         this.username = "";
